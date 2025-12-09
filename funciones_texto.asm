@@ -6,12 +6,12 @@ imprimir_texto:
     mov ecx, eax
     ; calculamos cuántos caracteres tiene
     xor edx, edx
-.contar_chars:
+contar_chars:
     cmp byte [ecx + edx], 0
-    je .imprimir_ahora
+    je imprimir_ahora
     inc edx
-    jmp .contar_chars
-.imprimir_ahora:
+    jmp contar_chars
+imprimir_ahora:
     mov eax, 4                      ; sys_write
     mov ebx, 1                      ; stdout
     int 0x80
@@ -31,18 +31,16 @@ leer_teclado:
     ; quitamos el enter al final
     mov edi, ecx
     xor ecx, ecx
-.buscar_enter:
+buscar_enter:
     cmp byte [edi + ecx], 0xA
-    je .quitar_enter
+    je quitar_enter
     cmp byte [edi + ecx], 0
-    je .listo
+    je terminar_impresion
     inc ecx
-    jmp .buscar_enter
-.quitar_enter:
+    jmp buscar_enter
+quitar_enter:
     mov byte [edi + ecx], 0
-.listo:
-    popa
-    ret
+
 
 ; Compara dos textos
 ; esi = primer texto, edi = segundo texto
@@ -50,22 +48,22 @@ leer_teclado:
 comparar_textos:
     push esi
     push edi
-.seguir_comparando:
+seguir_comparando:
     mov al, [esi]
     mov bl, [edi]
     cmp al, bl
-    jne .son_diferentes
+    jne son_diferentes
     cmp al, 0
-    je .son_iguales
+    je son_iguales
     inc esi
     inc edi
-    jmp .seguir_comparando
-.son_diferentes:
+    jmp seguir_comparando
+son_diferentes:
     pop edi
     pop esi
     mov eax, 1
     ret
-.son_iguales:
+son_iguales:
     pop edi
     pop esi
     xor eax, eax
@@ -85,30 +83,30 @@ texto_a_numero:
     xor edx, edx                    ; flag para saber si es negativo
 
     cmp byte [esi], '-'             ; verificamos si tiene signo menos
-    jne .convertir_digitos
+    jne convertir_digitos
     mov edx, 1                      ; marcamos que es negativo
     inc esi
 
-.convertir_digitos:
+convertir_digitos:
     mov cl, [esi]
     cmp cl, 0
-    je .terminar_conversion
+    je terminar_conversion
     cmp cl, 0xA
-    je .terminar_conversion
+    je terminar_conversion
     
     sub cl, '0'                     ; convertimos de ASCII a número
     imul eax, 10                    ; corremos el resultado actual
     add eax, ecx                    ; agregamos el nuevo dígito
     
     inc esi
-    jmp .convertir_digitos
+    jmp convertir_digitos
 
-.terminar_conversion:
+terminar_conversion:
     cmp edx, 1
-    jne .devolver_numero
+    jne devolver_numero
     neg eax                         ; si era negativo, invertimos el signo
 
-.devolver_numero:
+devolver_numero:
     pop esi
     pop edx
     pop ecx
@@ -122,7 +120,7 @@ numero_a_texto:
     mov dword [contador_loop], 0    ; contador de dígitos (ahora manual)
     
     cmp eax, 0
-    jge .procesar_numero
+    jge procesar_numero
     ; si es negativo, imprimimos el signo
     push eax
     mov eax, signo_menos
@@ -130,21 +128,21 @@ numero_a_texto:
     pop eax
     neg eax                         ; lo hacemos positivo
 
-.procesar_numero:
+procesar_numero:
     mov ebx, 10
-.separar_digitos:
+separar_digitos:
     xor edx, edx
     div ebx                         ; dividimos entre 10
     add dl, '0'                     ; convertimos el resto a ASCII
     push edx                        ; guardamos en la pila
     inc dword [contador_loop]       ; contamos el dígito
     cmp eax, 0
-    jne .separar_digitos
+    jne separar_digitos
     
 ; Ahora imprimimos los dígitos usando loop manual
-.imprimir_digitos:
+imprimir_digitos:
     cmp dword [contador_loop], 0    ; verificamos si quedan dígitos
-    je .terminar_impresion          ; si no quedan, terminamos
+    je terminar_impresion          ; si no quedan, terminamos
     
     pop eax                         ; sacamos cada dígito
     mov [buffer_resultado], al
@@ -153,8 +151,8 @@ numero_a_texto:
     call imprimir_texto
     
     dec dword [contador_loop]       ; restamos 1 al contador
-    jmp .imprimir_digitos           ; repetimos manualmente
+    jmp imprimir_digitos           ; repetimos manualmente
 
-.terminar_impresion:
+terminar_impresion:
     popa
     ret
