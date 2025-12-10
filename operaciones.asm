@@ -1,7 +1,7 @@
 ; ========== OPERACIONES MATEMÁTICAS ==========
 
 pedir_dos_numeros:
-    ; Pedimos el primer número
+    ; Pide el primer número
     mov eax, txt_primer_num
     call imprimir_texto
     
@@ -13,7 +13,7 @@ pedir_dos_numeros:
     call texto_a_numero
     mov [numero1], eax
 
-    ; Pedimos el segundo número
+    ; Pide el segundo número
     mov eax, txt_segundo_num
     call imprimir_texto
     
@@ -44,7 +44,7 @@ hacer_multiplicacion:
     call pedir_dos_numeros
     mov eax, [numero1]
     mov ebx, [numero2]
-    imul eax, ebx                   ; multiplicamos con signo
+    imul eax, ebx                   ; multiplica con signo
     call mostrar_resultado
     jmp mostrar_menu
 
@@ -52,11 +52,11 @@ hacer_division:
     call pedir_dos_numeros
     mov ebx, [numero2]
     cmp ebx, 0
-    je error_division_cero          ; verificamos que no divida por cero
+    je error_division_cero          ; verifica que no divida por cero
 
     mov eax, [numero1]
-    cdq                             ; preparamos para división con signo
-    idiv ebx                        ; dividimos, el resultado queda en eax
+    cdq                             ; prepara para división con signo
+    idiv ebx                        ; divide, el resultado queda en eax
     call mostrar_resultado
     jmp mostrar_menu
 

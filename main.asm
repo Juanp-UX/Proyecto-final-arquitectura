@@ -32,11 +32,11 @@ section .data
     mostrar_texto       db 1Bh, "[0m", 0     ; volver a normal
 
 section .bss
-    entrada             resb 30     ; donde guardamos lo que escribe el usuario
+    entrada             resb 30     ; donde se guarda lo que escribe el usuario
     numero1             resd 1      ; primer número de la operación
     numero2             resd 1      ; segundo número de la operación
     buffer_resultado    resb 30     ; para convertir números a texto
-    contador_loop       resd 1      ; para loops manuales
+    contador_loop       resd 1      ; para loops 
 
 section .text
     global _start
