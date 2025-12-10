@@ -27,7 +27,7 @@ leer_teclado:
     mov eax, 3                      ; sys_read
     mov ebx, 0                      ; stdin
     int 0x80
-    
+
     ; quitamos el enter al final
     mov edi, ecx
     xor ecx, ecx
@@ -40,7 +40,8 @@ buscar_enter:
     jmp buscar_enter
 quitar_enter:
     mov byte [edi + ecx], 0
-
+    popa
+    ret
 
 ; Compara dos textos
 ; esi = primer texto, edi = segundo texto
@@ -117,7 +118,7 @@ devolver_numero:
 ; eax = número a imprimir
 numero_a_texto:
     pusha
-    mov dword [contador_loop], 0    ; contador de dígitos (ahora manual)
+    mov dword [contador_loop], 0    ; contador de dígitos 
     
     cmp eax, 0
     jge procesar_numero
